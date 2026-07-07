@@ -1,4 +1,11 @@
+bcrypt
+datetime
+dotenv
 flask
 flask_cors
 prometheus_client
+pydantic
+pymongo
+PyJWT
+strawberry-graphql
 strawberry-graphql[flask]

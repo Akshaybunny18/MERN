@@ -4,10 +4,13 @@ from strawberry.flask.views import GraphQLView
 from prometheus_client import Counter, generate_latest
 from prometheus_client import CONTENT_TYPE_LATEST
 
-from backend.graphql.queries import Query
-from backend.graphql.mutations import Mutation
+from gql.queries import Query
+from gql.mutations import Mutation
+from database import db
+from auth.routes import auth_bp
 
 app = Flask(__name__)
+app.register_blueprint(auth_bp)
 
 REQUESTS = Counter(
     "http_requests_total",
@@ -20,9 +23,15 @@ schema = strawberry.Schema(query=Query, mutation=Mutation)
 def before():
     REQUESTS.inc()
 
+
 @app.route("/")
 def home():
-    return {"message": "Hello"}
+    collections = db.list_collection_names()
+
+    return {
+        "status": "connected",
+        "collections": collections
+    }
 
 @app.route("/metrics")
 def metrics():
@@ -30,10 +39,12 @@ def metrics():
         "Content-Type": CONTENT_TYPE_LATEST
     }
 
+from middleware.auth import get_context
+
 # Add Strawberry GraphQL endpoint
 app.add_url_rule(
     "/graphql",
-    view_func=GraphQLView.as_view("graphql_view", schema=schema)
+    view_func=GraphQLView.as_view("graphql_view", schema=schema, get_context=get_context)
 )
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import strawberry
 from typing import List, Optional
-from backend.models.models import User, users_db
+from backend.models.users import User, users_db
 
 @strawberry.type
 class Query:

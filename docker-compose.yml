@@ -5,6 +5,16 @@ services:
   backend:
     build: ./backend
 
+    ports:
+      - "5000:5000"
+    
+    depends_on:
+    - mongodb
+
+    environment:
+      MONGO_URI: mongodb://admin:password@mongodb:27017/
+      DATABASE_NAME: mern
+
   mongodb:
     image: mongo:8
 
@@ -46,24 +56,24 @@ services:
     depends_on:
       - backend
 
-  grafana:
-    image: grafana/grafana-oss:latest
+  # grafana:
+  #   image: grafana/grafana-oss:latest
 
-    container_name: grafana
+  #   container_name: grafana
 
-    ports:
-      - "3000:3000"
+  #   ports:
+  #     - "3000:3000"
 
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+  #   environment:
+  #     GF_SECURITY_ADMIN_USER: admin
+  #     GF_SECURITY_ADMIN_PASSWORD: admin
 
-    depends_on:
-      - prometheus
+  #   depends_on:
+  #     - prometheus
 
-    volumes:
-      - grafana-storage:/var/lib/grafana
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana
 
 volumes:
   mongo-data:
-  grafana-storage:
+  # grafana-storage:
