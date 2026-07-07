@@ -2,6 +2,9 @@ from flask import Flask
 from prometheus_client import Counter, generate_latest
 from prometheus_client import CONTENT_TYPE_LATEST
 
+# from queries import queries
+# from mutations import mutations
+
 app = Flask(__name__)
 
 REQUESTS = Counter(
