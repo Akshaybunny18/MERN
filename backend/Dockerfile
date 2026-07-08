@@ -1,11 +1,13 @@
-FROM python:3.12-slim
+FROM node:20-alpine
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY package*.json ./
 
-RUN pip install -r requirements.txt
+RUN npm install
 
 COPY . .
 
-CMD ["python", "app.py"]
+EXPOSE 5000
+
+CMD ["node", "server.js"]
