@@ -1,11 +1,11 @@
 bcrypt
-datetime
-dotenv
-flask
-flask_cors
+Flask
+Flask-Cors
 prometheus_client
 pydantic
 pymongo
 PyJWT
+python-dotenv
+requests
 strawberry-graphql
 strawberry-graphql[flask]

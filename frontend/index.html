@@ -2,9 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        config: {
+          theme: {
+            extend: {
+              boxShadow: {
+                glow: '0 0 0 1px rgba(56,189,248,0.2), 0 18px 60px rgba(0,0,0,0.35)',
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="CampusPulse is a role-aware campus event portal with participant auth, browse flows, clubs, profiles, and ticket tracking." />
+    <title>CampusPulse</title>
   </head>
   <body>
     <div id="root"></div>
