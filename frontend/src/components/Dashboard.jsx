@@ -73,7 +73,13 @@ const Dashboard = () => {
             <div className="text-text-secondary">Loading...</div>
           ) : upcomingTickets.length === 0 ? (
             <div className="glass-panel p-8 text-center text-text-secondary">
-              No upcoming events found. Browse events to register!
+              <p className="mb-4">No upcoming events found.</p>
+              <button 
+                onClick={() => navigate('/events')}
+                className="btn btn-primary inline-block"
+              >
+                Explore Events
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

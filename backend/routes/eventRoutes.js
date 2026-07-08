@@ -38,50 +38,28 @@ router.put('/:id', protect, organizer, async (req, res) => {
     if (!event) return res.status(404).json({ message: 'Event not found' });
     
     // Make sure the user owns the event
-    if (event.organizerId.toString() !== req.user._id.toString() && req.user.role !== 'Admin') {
+    if (event.organizerId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to edit this event' });
     }
 
+    const ticketsCount = await Ticket.countDocuments({ event: event._id });
+
     const { status, description, registrationDeadline, registrationLimit, customFormStructure, ...otherUpdates } = req.body;
 
-    if (event.status === 'Draft') {
-      // Drafts can be freely edited
-      Object.assign(event, req.body);
-    } else if (event.status === 'Published') {
-      // Published: description update, extend deadline, increase limit, close registrations
-      if (description) event.description = description;
-      
-      if (registrationDeadline && new Date(registrationDeadline) > new Date(event.registrationDeadline)) {
-        event.registrationDeadline = registrationDeadline;
-      }
-      
-      if (registrationLimit && registrationLimit > event.registrationLimit) {
-        event.registrationLimit = registrationLimit;
-      }
-      
-      if (status && ['Closed', 'Ongoing'].includes(status)) {
+    if (ticketsCount > 0) {
+      // If there are registrations, only allow very specific edits (e.g., status, description)
+      if (status && ['Closed', 'Ongoing', 'Completed'].includes(status)) {
         event.status = status;
       }
+      if (description) event.description = description;
       
-      // Check if trying to edit locked fields
-      const lockedFieldsAttempt = Object.keys(otherUpdates).length > 0 || (customFormStructure && event.isFormLocked);
-      if (lockedFieldsAttempt && !status) { // if status is the only update, that's fine
-         return res.status(400).json({ message: 'Cannot edit locked fields of a published event.' });
+      const lockedFieldsAttempt = Object.keys(otherUpdates).length > 0 || customFormStructure;
+      if (lockedFieldsAttempt) {
+        return res.status(400).json({ message: 'Cannot edit core details or forms after the first registration.' });
       }
-      
-      if (customFormStructure && !event.isFormLocked) {
-         event.customFormStructure = customFormStructure;
-      }
-
-    } else if (['Ongoing', 'Completed', 'Closed'].includes(event.status)) {
-      // Ongoing/Completed: no edits except status change
-      if (status && ['Completed', 'Closed'].includes(status)) {
-         event.status = status;
-      } else if (status) {
-         return res.status(400).json({ message: `Cannot change status to ${status} from ${event.status}` });
-      } else {
-         return res.status(400).json({ message: 'Cannot edit fields of an ongoing or completed event.' });
-      }
+    } else {
+      // No registrations yet, freely edit
+      Object.assign(event, req.body);
     }
 
     const updatedEvent = await event.save();
@@ -90,6 +68,31 @@ router.put('/:id', protect, organizer, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to update event', error: error.message });
+  }
+});
+
+// @route   DELETE /api/events/:id
+// @desc    Delete an event if no registrations
+// @access  Organizer/Admin
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    if (req.user.role !== 'Admin' && event.organizerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to delete this event' });
+    }
+
+    const ticketsCount = await Ticket.countDocuments({ event: event._id });
+    if (ticketsCount > 0) {
+      return res.status(400).json({ message: 'Cannot delete event that has registrations.' });
+    }
+
+    await Event.deleteOne({ _id: event._id });
+    res.json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete event' });
   }
 });
 

@@ -20,7 +20,7 @@ const Profile = () => {
 
   // Password Modal State
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '' });
+  const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [pwdMessage, setPwdMessage] = useState({ type: '', text: '' });
 
   const fetchProfile = async () => {
@@ -92,6 +92,12 @@ const Profile = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setPwdMessage({ type: '', text: '' });
+    
+    if (pwdForm.newPassword !== pwdForm.confirmPassword) {
+      setPwdMessage({ type: 'error', text: 'New passwords do not match' });
+      return;
+    }
+
     try {
       const res = await fetch('/api/users/password', {
         method: 'PUT',
@@ -425,6 +431,15 @@ const Profile = () => {
                   type="password" required minLength={6}
                   value={pwdForm.newPassword}
                   onChange={e => setPwdForm({...pwdForm, newPassword: e.target.value})}
+                  className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Confirm New Password</label>
+                <input 
+                  type="password" required minLength={6}
+                  value={pwdForm.confirmPassword}
+                  onChange={e => setPwdForm({...pwdForm, confirmPassword: e.target.value})}
                   className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
                 />
               </div>

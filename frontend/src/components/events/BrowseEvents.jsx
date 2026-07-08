@@ -11,7 +11,9 @@ const BrowseEvents = () => {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [eligibilityFilter, setEligibilityFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [followedOnly, setFollowedOnly] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
   const fetchEvents = useCallback(async () => {
     try {
@@ -28,6 +30,7 @@ const BrowseEvents = () => {
       if (search) query.append('search', search);
       if (typeFilter) query.append('type', typeFilter);
       if (eligibilityFilter) query.append('eligibility', eligibilityFilter);
+      if (statusFilter) query.append('status', statusFilter);
       
       if (followedOnly && user?.preferences?.followedOrganizers) {
         query.append('followedOrganizers', user.preferences.followedOrganizers.join(','));
@@ -41,7 +44,7 @@ const BrowseEvents = () => {
     } finally {
       setLoading(false);
     }
-  }, [search, typeFilter, eligibilityFilter, followedOnly]);
+  }, [search, typeFilter, eligibilityFilter, statusFilter, followedOnly]);
 
   useEffect(() => {
     // Debounce search slightly
@@ -50,6 +53,25 @@ const BrowseEvents = () => {
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchEvents]);
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    if (!window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${userInfo?.token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setEvents(events.filter(ev => ev._id !== id));
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('Error deleting event');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -112,6 +134,20 @@ const BrowseEvents = () => {
                   >
                     <option value="">Anyone</option>
                     <option value="IIIT">IIIT Only</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-2">Status</label>
+                  <select 
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-neon"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="Published">Upcoming (Published)</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </div>
 
@@ -179,9 +215,20 @@ const BrowseEvents = () => {
                       {event.description}
                     </p>
                     
-                    <div className="flex items-center gap-2 text-sm font-medium mt-auto">
-                      <CalendarIcon className="w-4 h-4 text-text-secondary" />
-                      <span>{new Date(event.startDate).toLocaleDateString()}</span>
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-2 text-sm font-medium text-text-secondary">
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>{new Date(event.startDate).toLocaleDateString()}</span>
+                      </div>
+                      
+                      {userInfo?.role === 'Admin' && (
+                        <button 
+                          onClick={(e) => handleDelete(e, event._id)}
+                          className="px-3 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 text-xs transition-colors"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                   </Link>
                 ))}

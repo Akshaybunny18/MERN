@@ -77,3 +77,20 @@ The system automatically provisions the first Admin account when the backend sta
 - **Password:** `adminpassword`
 
 Organizers cannot self-register. You must use the Admin account to provision Organizer roles.
+
+---
+
+## 🛠️ Technology Stack & Architecture
+We have fully implemented the core architecture and documented the current technology stack choices, libraries, and advanced deployment options in [Tech_Stack.md](./Tech_Stack.md). 
+
+**Key Choices Justified:**
+- **MongoDB**: Used for flexible schema design (custom event forms and participant profiles vary heavily).
+- **Express + Node.js**: Fast, non-blocking I/O ideal for handling multiple registration requests during high-traffic events.
+- **React + Tailwind CSS**: Component-based architecture for dynamic forms. Tailwind allows for rapid, consistent styling without heavy external libraries.
+- **JWT & Bcrypt**: Essential for stateless authentication and secure credential storage.
+
+## 🌟 Advanced Features Implemented (Tier B)
+As per the assignment requirements (Section 13), we chose to implement features from **Tier B**:
+1. **Organizer Password Reset Workflow**: Fully implemented with an Admin approval dashboard, secure reason tracking, auto-generation of strong passwords, and history tracking. Justification: Crucial for an event management system where clubs rotate leadership annually and frequently lose access to accounts.
+
+*More advanced features from Tier A (e.g. Merchandise Approval, Team Chat) can be built upon this extensible foundation!*

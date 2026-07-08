@@ -195,22 +195,70 @@ router.delete('/admin/organizers/:id', protect, admin, async (req, res) => {
 // @access  Admin
 router.get('/admin/reset-requests', protect, admin, async (req, res) => {
   try {
-    const users = await User.find({ resetRequest: true }).select('-password');
-    res.json(users);
+    const users = await User.find({ 'resetRequests.0': { $exists: true } }).select('-password');
+    let allRequests = [];
+    users.forEach(user => {
+      user.resetRequests.forEach(req => {
+        allRequests.push({
+          userId: user._id,
+          email: user.email,
+          organizerName: user.organizerProfile?.organizerName,
+          request: req
+        });
+      });
+    });
+    // Sort by requestedAt descending
+    allRequests.sort((a, b) => new Date(b.request.requestedAt) - new Date(a.request.requestedAt));
+    res.json(allRequests);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch reset requests' });
   }
 });
 
+// @route   PUT /api/users/admin/reset-requests/:userId/:requestId/resolve
+// @desc    Approve or reject a reset request
+// @access  Admin
+router.put('/admin/reset-requests/:userId/:requestId/resolve', protect, admin, async (req, res) => {
+  const { status, adminComment } = req.body;
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const request = user.resetRequests.id(req.params.requestId);
+    if (!request) return res.status(404).json({ message: 'Request not found' });
+
+    request.status = status;
+    request.adminComment = adminComment;
+    request.resolvedAt = Date.now();
+
+    let newPassword = null;
+    if (status === 'Approved') {
+      const crypto = require('crypto');
+      newPassword = crypto.randomBytes(4).toString('hex') + 'Aa1!'; // 8 random hex chars + Aa1!
+      user.password = newPassword; // Will be hashed by pre-save hook
+    }
+
+    await user.save();
+    
+    res.json({ message: `Request ${status}`, newPassword });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to resolve request' });
+  }
+});
+
 // @route   POST /api/users/request-reset
-// @desc    User requests a password reset
+// @desc    Organizer requests a password reset
 // @access  Public
 router.post('/request-reset', async (req, res) => {
+  const { email, reason } = req.body;
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.role !== 'Organizer') return res.status(403).json({ message: 'Only Organizers can request password resets' });
+    if (!reason) return res.status(400).json({ message: 'Reason is required' });
     
-    user.resetRequest = true;
+    user.resetRequests.push({ reason });
     await user.save();
     
     res.json({ message: 'Password reset requested successfully' });

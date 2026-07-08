@@ -76,6 +76,24 @@ const EventDetailOrganizer = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${userInfo.token}` }
+      });
+      const resData = await res.json();
+      if (res.ok) {
+        navigate('/organizer/dashboard');
+      } else {
+        alert(resData.message);
+      }
+    } catch (err) {
+      alert('Error deleting event');
+    }
+  };
+
   const exportCSV = () => {
     if (!data || !data.participants.length) return alert('No participants to export');
     
@@ -146,9 +164,16 @@ const EventDetailOrganizer = () => {
                <Download className="w-4 h-4" /> Export CSV
              </button>
              {!isEditing ? (
-               <button onClick={() => setIsEditing(true)} className="btn btn-outline flex items-center gap-2">
-                 <Edit2 className="w-4 h-4" /> Edit Event
-               </button>
+               <>
+                 <button onClick={() => setIsEditing(true)} className="btn btn-outline flex items-center gap-2">
+                   <Edit2 className="w-4 h-4" /> Edit Event
+                 </button>
+                 {stats.totalRegistrations === 0 && (
+                   <button onClick={handleDelete} className="btn bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 flex items-center gap-2 transition-colors">
+                     Delete
+                   </button>
+                 )}
+               </>
              ) : (
                <button onClick={handleUpdate} className="btn btn-primary flex items-center gap-2">
                  <Save className="w-4 h-4" /> Save Changes
@@ -184,13 +209,16 @@ const EventDetailOrganizer = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm mb-1 text-text-secondary">Registration Deadline</label>
-                      <input type="datetime-local" className="w-full p-2 bg-bg-secondary border border-glass-border rounded" value={editForm.registrationDeadline} onChange={e => setEditForm({...editForm, registrationDeadline: e.target.value})} />
+                      <input type="datetime-local" className="w-full p-2 bg-bg-secondary border border-glass-border rounded disabled:opacity-50" disabled={stats.totalRegistrations > 0} value={editForm.registrationDeadline} onChange={e => setEditForm({...editForm, registrationDeadline: e.target.value})} />
                     </div>
                     <div>
                       <label className="block text-sm mb-1 text-text-secondary">Max Participants (Limit)</label>
-                      <input type="number" className="w-full p-2 bg-bg-secondary border border-glass-border rounded" value={editForm.registrationLimit} onChange={e => setEditForm({...editForm, registrationLimit: e.target.value})} />
+                      <input type="number" className="w-full p-2 bg-bg-secondary border border-glass-border rounded disabled:opacity-50" disabled={stats.totalRegistrations > 0} value={editForm.registrationLimit} onChange={e => setEditForm({...editForm, registrationLimit: e.target.value})} />
                     </div>
                   </div>
+                  {stats.totalRegistrations > 0 && (
+                    <p className="text-xs text-orange-400 mt-2">Core details are locked because this event has registered participants.</p>
+                  )}
                 </div>
                 <div className="mt-4 flex justify-end">
                    <button onClick={() => setIsEditing(false)} className="text-sm text-text-secondary hover:text-white">Cancel</button>

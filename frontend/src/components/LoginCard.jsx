@@ -7,6 +7,8 @@ const LoginCard = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetReason, setResetReason] = useState('');
   
   const navigate = useNavigate();
 
@@ -88,20 +90,9 @@ const LoginCard = () => {
           <div className="flex items-center justify-end">
             <button 
               type="button" 
-              onClick={async () => {
+              onClick={() => {
                 if (!email) return alert('Please enter your email address first.');
-                try {
-                  const res = await fetch('/api/users/request-reset', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                  });
-                  const data = await res.json();
-                  if (res.ok) alert('Password reset requested successfully. An admin will process it shortly.');
-                  else alert(data.message);
-                } catch (e) {
-                  alert('Error requesting reset');
-                }
+                setShowResetModal(true);
               }}
               className="text-xs text-accent-neon hover:underline"
             >
@@ -130,6 +121,56 @@ const LoginCard = () => {
           </Link>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="glass-panel w-full max-w-sm p-6 relative">
+            <h3 className="text-xl font-bold mb-4">Request Password Reset</h3>
+            <p className="text-sm text-text-secondary mb-4">Only Organizers can request a password reset. Please provide a reason.</p>
+            <textarea
+              className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon mb-4"
+              rows="3"
+              placeholder="Reason for reset..."
+              value={resetReason}
+              onChange={(e) => setResetReason(e.target.value)}
+            />
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setShowResetModal(false)}
+                className="px-4 py-2 rounded-lg font-semibold text-text-secondary hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={async () => {
+                  if (!resetReason) return alert('Please provide a reason.');
+                  try {
+                    const res = await fetch('/api/users/request-reset', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email, reason: resetReason })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                      alert('Password reset requested successfully.');
+                      setShowResetModal(false);
+                      setResetReason('');
+                    } else {
+                      alert(data.message);
+                    }
+                  } catch (e) {
+                    alert('Error requesting reset');
+                  }
+                }}
+                className="btn btn-primary"
+              >
+                Submit Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

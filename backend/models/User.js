@@ -22,10 +22,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  resetRequest: {
-    type: Boolean,
-    default: false
-  },
+  resetRequests: [{
+    reason: { type: String, required: true },
+    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
+    adminComment: { type: String },
+    requestedAt: { type: Date, default: Date.now },
+    resolvedAt: { type: Date }
+  }],
   // Participant-specific fields (Required if role === 'Participant')
   participantProfile: {
     firstName: { type: String },
