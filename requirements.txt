@@ -10,6 +10,7 @@ jsonwebtoken==9.x
 cors==2.x
 dotenv==16.x
 prom-client==15.x
+redis==4.x
 
 # Frontend Dependencies (React/Vite)
 react==18.x

@@ -2,6 +2,7 @@ const express = require('express');
 const Event = require('../models/Event');
 const Ticket = require('../models/Ticket');
 const { protect, organizer } = require('../middleware/authMiddleware');
+const { getRedisClient } = require('../config/redis');
 
 const router = express.Router();
 
@@ -166,6 +167,16 @@ router.get('/organizer/:id/analytics', protect, organizer, async (req, res) => {
 // @access  Public
 router.get('/', async (req, res) => {
   try {
+    const redisClient = getRedisClient();
+    const cacheKey = `events:${JSON.stringify(req.query)}`;
+    
+    if (redisClient && redisClient.isReady) {
+      const cachedData = await redisClient.get(cacheKey);
+      if (cachedData) {
+        return res.json(JSON.parse(cachedData));
+      }
+    }
+
     const { 
       search, 
       type, 
@@ -223,6 +234,10 @@ router.get('/', async (req, res) => {
       .populate('organizerId', 'organizerProfile.organizerName email')
       .sort(trending === 'true' ? {} : { startDate: 1 })
       .limit(trending === 'true' ? 5 : 0);
+
+    if (redisClient && redisClient.isReady) {
+      await redisClient.setEx(cacheKey, 60, JSON.stringify(events)); // Cache for 60s
+    }
 
     res.json(events);
   } catch (error) {

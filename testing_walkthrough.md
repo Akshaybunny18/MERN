@@ -94,3 +94,28 @@ Make sure both servers are running:
 ---
 ### Final Notes
 By following this guide, you will verify every piece of the MERN stack is interacting correctly: MongoDB relationships, Express routing middleware (JWT verification), and React state management (Vite). Good luck with your assignment submission!
+
+---
+## Part 2: Enterprise Architecture (Caching, Observability, Kubernetes)
+
+### 12. Redis Caching
+**Test 13: Event List Caching**
+1. Ensure the `redis` container is running via `docker-compose`.
+2. Open your network tab in the browser or use Postman to hit `GET /api/events`.
+3. The first request fetches data from MongoDB. The subsequent requests (within 60 seconds) will be served instantly from the Redis cache in memory.
+
+### 13. Observability (Prometheus & Grafana)
+**Test 14: Metrics Dashboard**
+1. Ensure `prometheus` and `grafana` containers are running.
+2. Go to `http://localhost:9090` (Prometheus) and verify it is scraping `backend:5000`.
+3. Go to `http://localhost:3000` (Grafana). Log in with `admin` / `admin`.
+4. Add Prometheus as a Data Source (`http://prometheus:9090`). You can now track API request durations, hits, and HTTP response codes exposed by the backend `/metrics` endpoint.
+
+### 14. Kubernetes Deployment
+**Test 15: K8s Manifests**
+1. The `k8s/` directory contains `Deployment` and `Service` files for MongoDB, Redis, Backend, Frontend, and an `Ingress` controller.
+2. To test locally (if Minikube/Docker Desktop Kubernetes is enabled), run:
+   ```bash
+   kubectl apply -f k8s/
+   ```
+3. Verify pods are running with `kubectl get pods`.

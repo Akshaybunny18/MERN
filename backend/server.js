@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const promClient = require('prom-client');
 const dotenv = require('dotenv');
+const { connectRedis } = require('./config/redis');
 
 // Load environment variables
 dotenv.config();
@@ -11,6 +12,9 @@ dotenv.config();
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/mern')
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
+
+// Connect to Redis
+connectRedis();
 
 const app = express();
 

@@ -9,10 +9,12 @@ services:
     
     depends_on:
     - mongodb
+    - redis
 
     environment:
       MONGO_URI: mongodb://admin:password@mongodb:27017/
       DATABASE_NAME: mern
+      REDIS_URI: redis://redis:6379
 
   frontend:
     build:
@@ -30,6 +32,7 @@ services:
 
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - BACKEND_URL=http://backend:5000
 
     stdin_open: true
     tty: true
@@ -51,6 +54,13 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
   nginx:
     image: nginx:latest
 
@@ -64,37 +74,29 @@ services:
       - backend
       - frontend
 
-  # prometheus:
-  #   image: prom/prometheus
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - backend
 
-  #   ports:
-  #     - "9090:9090"
-
-  #   volumes:
-  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-
-  #   depends_on:
-  #     - backend
-
-  # grafana:
-  #   image: grafana/grafana-oss:latest
-
-  #   container_name: grafana
-
-  #   ports:
-  #     - "3000:3000"
-
-  #   environment:
-  #     GF_SECURITY_ADMIN_USER: admin
-  #     GF_SECURITY_ADMIN_PASSWORD: admin
-
-  #   depends_on:
-  #     - prometheus
-
-  #   volumes:
-  #     - grafana-storage:/var/lib/grafana
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
 volumes:
   mongo-data:
   
-  # grafana-storage:
+  grafana-storage:

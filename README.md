@@ -18,8 +18,9 @@ The easiest way to run the entire stack (Frontend, Backend, MongoDB, Nginx Proxy
 3. Access the application:
    - **Frontend UI:** `http://localhost` (Served via Nginx Reverse Proxy)
    - **Backend API:** `http://localhost/api` (Proxied to backend)
-   - **Prometheus Metrics:** `http://localhost:9090`
+   - **Prometheus Metrics:** `http://localhost:9090` (Scraping backend metrics)
    - **Grafana Dashboard:** `http://localhost:3000` (Login: `admin` / `admin`)
+   - **Redis Cache:** Running internally on port `6379`
 
 4. To stop the application:
    ```bash
@@ -88,6 +89,8 @@ We have fully implemented the core architecture and documented the current techn
 - **Express + Node.js**: Fast, non-blocking I/O ideal for handling multiple registration requests during high-traffic events.
 - **React + Tailwind CSS**: Component-based architecture for dynamic forms. Tailwind allows for rapid, consistent styling without heavy external libraries.
 - **JWT & Bcrypt**: Essential for stateless authentication and secure credential storage.
+- **Redis**: In-memory caching for faster event queries and reducing database load.
+- **Kubernetes (K8s)**: Deployment manifests are available in the `k8s/` directory for deploying the full stack to any cluster.
 
 ## 🌟 Advanced Features Implemented (Tier B)
 As per the assignment requirements (Section 13), we chose to implement features from **Tier B**:
