@@ -1,21 +1,25 @@
 const { createClient } = require('redis');
 
-let redisClient;
+let redisClient = null;
 
 const connectRedis = async () => {
-  const url = process.env.REDIS_URI || 'redis://localhost:6379';
-  
-  redisClient = createClient({ url });
+  if (!process.env.REDIS_URI) {
+    console.log('No REDIS_URI provided. Running without Redis cache.');
+    return;
+  }
 
-  redisClient.on('error', (err) => console.error('Redis Client Error:', err));
-  redisClient.on('connect', () => console.log('Redis connected successfully'));
-  redisClient.on('reconnecting', () => console.log('Redis reconnecting...'));
+  const url = process.env.REDIS_URI;
+  const client = createClient({ url });
+
+  client.on('error', (err) => console.error('Redis Client Error:', err));
+  client.on('connect', () => console.log('Redis connected successfully'));
+  client.on('reconnecting', () => console.log('Redis reconnecting...'));
 
   try {
-    await redisClient.connect();
+    await client.connect();
+    redisClient = client; // Only expose client if connection is successful
   } catch (error) {
     console.error('Failed to connect to Redis:', error.message);
-    // Don't crash the server if Redis fails, just proceed without caching
   }
 };
 
