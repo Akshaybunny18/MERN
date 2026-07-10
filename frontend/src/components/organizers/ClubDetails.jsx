@@ -56,8 +56,18 @@ const ClubDetails = () => {
       <main className="flex-1 p-8 max-w-5xl mx-auto w-full">
         {/* Organizer Header */}
         <div className="glass-panel p-8 mb-12 animate-fade-in flex flex-col md:flex-row gap-8 items-start">
-          <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg shrink-0">
-            <Building className="w-12 h-12 text-white" />
+          {/* Organizer logo */}
+          <div style={{
+            width: '96px', height: '96px', borderRadius: '1rem',
+            overflow: 'hidden', border: '1px solid var(--glass-border)',
+            flexShrink: 0, background: 'var(--bg-secondary)',
+          }}>
+            <img
+              src={`/local_files/club_placeholder.jpg`}
+              alt={organizer.organizerProfile?.organizerName}
+              onError={e => { e.target.src = `https://api.dicebear.com/9.x/bottts/svg?seed=${encodeURIComponent(organizer.organizerProfile?.organizerName || organizer._id)}&size=96`; }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">

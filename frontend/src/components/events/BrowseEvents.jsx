@@ -117,7 +117,7 @@ const BrowseEvents = () => {
                   <select 
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-neon"
+                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-neon"
                   >
                     <option value="">All Types</option>
                     <option value="Normal">Normal</option>
@@ -130,7 +130,7 @@ const BrowseEvents = () => {
                   <select 
                     value={eligibilityFilter}
                     onChange={(e) => setEligibilityFilter(e.target.value)}
-                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-neon"
+                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-neon"
                   >
                     <option value="">Anyone</option>
                     <option value="IIIT">IIIT Only</option>
@@ -142,7 +142,7 @@ const BrowseEvents = () => {
                   <select 
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-neon"
+                    className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-neon"
                   >
                     <option value="">All Statuses</option>
                     <option value="Published">Upcoming (Published)</option>
@@ -178,7 +178,7 @@ const BrowseEvents = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search events by name..."
-                className="w-full glass-panel pl-12 pr-4 py-4 text-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                className="w-full glass-panel pl-12 pr-4 py-4 text-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
               />
             </div>
 
@@ -195,14 +195,24 @@ const BrowseEvents = () => {
                   <Link 
                     to={`/events/${event._id}`} 
                     key={event._id} 
-                    className="glass-panel p-6 hover:-translate-y-1 transition-all duration-300 group animate-fade-in flex flex-col h-full"
-                    style={{ animationDelay: `${i * 0.05}s` }}
+                    className="glass-panel hover:-translate-y-1 transition-all duration-300 group animate-fade-in flex flex-col h-full overflow-hidden"
+                    style={{ animationDelay: `${i * 0.05}s`, textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
                   >
+                    {/* Event image */}
+                    <div style={{ height: '140px', overflow: 'hidden', flexShrink: 0 }}>
+                      <img
+                        src={`/local_files/event_placeholder.jpg`}
+                        alt={event.name}
+                        onError={e => { e.target.src = `https://picsum.photos/seed/${event._id}/600/280`; }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <div className="flex justify-between items-start mb-4">
                       <div className="inline-block px-2 py-1 rounded text-xs font-semibold bg-accent-primary/20 text-accent-neon">
                         {event.eventType}
                       </div>
-                      <div className="text-xs font-medium text-text-secondary bg-white/5 px-2 py-1 rounded">
+                      <div className="text-xs font-medium text-text-secondary bg-glass-bg px-2 py-1 rounded">
                         {event.eligibility}
                       </div>
                     </div>
@@ -229,6 +239,7 @@ const BrowseEvents = () => {
                           Delete
                         </button>
                       )}
+                    </div>
                     </div>
                   </Link>
                 ))}

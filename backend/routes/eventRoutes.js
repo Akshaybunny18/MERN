@@ -72,7 +72,7 @@ router.put('/:id', protect, organizer, async (req, res) => {
 });
 
 // @route   DELETE /api/events/:id
-// @desc    Delete an event if no registrations
+// @desc    Delete event. Admin can delete even with registrations (cascade). Organizers cannot if registrations exist.
 // @access  Organizer/Admin
 router.delete('/:id', protect, async (req, res) => {
   try {
@@ -84,8 +84,17 @@ router.delete('/:id', protect, async (req, res) => {
     }
 
     const ticketsCount = await Ticket.countDocuments({ event: event._id });
-    if (ticketsCount > 0) {
-      return res.status(400).json({ message: 'Cannot delete event that has registrations.' });
+
+    if (req.user.role === 'Admin') {
+      // Admin can always delete; cascade-delete tickets first
+      if (ticketsCount > 0) {
+        await Ticket.deleteMany({ event: event._id });
+      }
+    } else {
+      // Organizer cannot delete if there are registrations
+      if (ticketsCount > 0) {
+        return res.status(400).json({ message: 'Cannot delete event that has registrations. Only an Admin can force-delete it.' });
+      }
     }
 
     await Event.deleteOne({ _id: event._id });

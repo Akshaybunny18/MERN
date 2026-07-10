@@ -153,7 +153,7 @@ const PasswordResetRequests = () => {
               <div className="text-center py-4">
                 <ShieldCheck className="w-12 h-12 text-green-400 mx-auto mb-4" />
                 <h4 className="text-lg font-bold mb-2">Password Reset Successful</h4>
-                <p className="text-sm text-text-secondary mb-4">Please securely share this temporary password with the organizer. They must change it upon logging in.</p>
+                <p className="text-sm text-text-secondary mb-4">Please securely share this temporary password with the organizer.</p>
                 <div className="bg-black/50 border border-green-500/30 p-4 rounded-lg font-mono text-xl tracking-widest text-green-400 mb-6">
                   {newPassword}
                 </div>

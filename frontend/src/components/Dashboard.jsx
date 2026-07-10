@@ -57,7 +57,7 @@ const Dashboard = () => {
       <Navbar />
       
       <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
-        <header className="mb-12 animate-fade-in">
+        <header className="mb-12">
           <h1 className="text-3xl font-bold text-gradient mb-2">My Dashboard</h1>
           <p className="text-text-secondary">Manage your events, tickets, and merchandise.</p>
         </header>
@@ -151,7 +151,7 @@ const Dashboard = () => {
                     </tr>
                   ) : (
                     historyTickets.map(ticket => (
-                      <tr key={ticket._id} className="border-b border-glass-border/50 hover:bg-white/5 transition-colors">
+                      <tr key={ticket._id} className="border-b border-glass-border/50">
                         <td className="p-4 font-medium">{ticket.event?.name}</td>
                         <td className="p-4">
                           <span className="px-2 py-1 text-xs rounded bg-accent-primary/20 text-accent-neon">
@@ -191,7 +191,7 @@ const Dashboard = () => {
 
       {/* Ticket Modal */}
       {selectedTicket && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="glass-panel w-full max-w-sm overflow-hidden flex flex-col relative">
             <button 
               onClick={() => setSelectedTicket(null)}

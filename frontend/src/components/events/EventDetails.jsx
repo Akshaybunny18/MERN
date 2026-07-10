@@ -36,10 +36,10 @@ const EventDetails = () => {
         if (res.ok) {
           setEvent(data);
           // Initialize form responses map
-          if (data.formStructure) {
+          if (data.customFormStructure) {
             const initial = {};
-            data.formStructure.forEach(field => {
-              initial[field.label] = '';
+            data.customFormStructure.forEach(field => {
+              initial[field.fieldName] = '';
             });
             setFormResponses(initial);
           }
@@ -93,6 +93,25 @@ const EventDetails = () => {
   if (loading) return <div className="min-h-screen"><Navbar /><div className="p-8 text-center">Loading...</div></div>;
   if (error || !event) return <div className="min-h-screen"><Navbar /><div className="p-8 text-center text-red-400">{error}</div></div>;
 
+  const handleDeleteEvent = async () => {
+    if (!window.confirm("Are you sure you want to delete this event? This action cannot be undone.")) return;
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Event deleted successfully');
+        navigate('/events');
+      } else {
+        alert(data.message || 'Failed to delete event');
+      }
+    } catch (err) {
+      alert('Error deleting event');
+    }
+  };
+
   const isDeadlinePassed = new Date() > new Date(event.registrationDeadline);
   const isOutOfStock = event.eventType === 'Merchandise' && event.merchDetails?.stockQuantity <= 0;
   
@@ -112,16 +131,26 @@ const EventDetails = () => {
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-primary/20 text-accent-neon border border-accent-primary/30">
                   {event.eventType} Event
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 border border-white/20">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-glass-bg border border-white/20">
                   Eligibility: {event.eligibility}
                 </span>
               </div>
               
-              <h1 className="text-4xl font-bold mb-4">{event.name}</h1>
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-4xl font-bold">{event.name}</h1>
+                {userInfo?.role === 'Admin' && (
+                  <button 
+                    onClick={handleDeleteEvent}
+                    className="btn bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/40 text-sm py-1.5"
+                  >
+                    Delete Event
+                  </button>
+                )}
+              </div>
               
               <div className="flex items-center gap-2 text-text-secondary mb-6">
                 <ShieldCheck className="w-5 h-5 text-accent-secondary" />
-                <span>Organized by <span className="text-white font-medium">{event.organizerId?.organizerProfile?.organizerName}</span></span>
+                <span>Organized by <span className="text-text-primary font-medium">{event.organizerId?.organizerProfile?.organizerName}</span></span>
               </div>
               
               <div className="prose prose-invert max-w-none">
@@ -134,7 +163,7 @@ const EventDetails = () => {
                 <div className="flex items-start gap-3">
                   <CalendarIcon className="w-5 h-5 text-accent-neon mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-white">Date & Time</h4>
+                    <h4 className="font-semibold text-text-primary">Date & Time</h4>
                     <p className="text-sm text-text-secondary">
                       Starts: {new Date(event.startDate).toLocaleString()}
                     </p>
@@ -147,7 +176,7 @@ const EventDetails = () => {
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-accent-neon mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-white">Location</h4>
+                    <h4 className="font-semibold text-text-primary">Location</h4>
                     <p className="text-sm text-text-secondary">
                       {event.location}
                     </p>
@@ -158,6 +187,7 @@ const EventDetails = () => {
           </div>
 
           {/* Registration / Purchase Form */}
+          {userInfo?.role === 'Participant' && (
           <div className="lg:col-span-1">
             <div className="glass-panel p-6 sticky top-24">
               <h3 className="text-xl font-bold mb-4 border-b border-glass-border pb-4">
@@ -206,32 +236,34 @@ const EventDetails = () => {
                           disabled={!canRegister || registering}
                           value={teamName}
                           onChange={(e) => setTeamName(e.target.value)}
-                          className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                          className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-text-primary focus:border-accent-neon"
                         />
                       </div>
                     )}
                     
-                    {event.formStructure && event.formStructure.map(field => (
-                      <div key={field.label}>
+                    {event.customFormStructure && event.customFormStructure.map(field => (
+                      <div key={field.fieldName}>
                         <label className="block text-sm font-medium text-text-secondary mb-1">
-                          {field.label} {field.isRequired && '*'}
+                          {field.fieldName} {field.required && '*'}
                         </label>
-                        {field.type === 'Text' || field.type === 'Number' ? (
+                        {field.fieldType === 'text' || field.fieldType === 'textarea' || field.fieldType === 'number' ? (
                           <input 
-                            type={field.type === 'Number' ? 'number' : 'text'}
-                            required={field.isRequired}
+                            type={field.fieldType === 'number' ? 'number' : 'text'}
+                            required={field.required}
                             disabled={!canRegister || registering}
-                            value={formResponses[field.label] || ''}
-                            onChange={(e) => setFormResponses({...formResponses, [field.label]: e.target.value})}
-                            className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                            value={formResponses[field.fieldName] || ''}
+                            onChange={(e) => setFormResponses({...formResponses, [field.fieldName]: e.target.value})}
+                            className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-primary focus:border-accent-neon"
+                            style={{ color: 'var(--text-primary)' }}
                           />
                         ) : (
                           <select
-                            required={field.isRequired}
+                            required={field.required}
                             disabled={!canRegister || registering}
-                            value={formResponses[field.label] || ''}
-                            onChange={(e) => setFormResponses({...formResponses, [field.label]: e.target.value})}
-                            className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                            value={formResponses[field.fieldName] || ''}
+                            onChange={(e) => setFormResponses({...formResponses, [field.fieldName]: e.target.value})}
+                            className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-primary focus:border-accent-neon"
+                            style={{ color: 'var(--text-primary)' }}
                           >
                             <option value="">Select option...</option>
                             {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -244,11 +276,11 @@ const EventDetails = () => {
 
                 {event.eventType === 'Merchandise' && (
                   <>
-                    <div className="flex justify-between items-center mb-4 text-sm bg-white/5 p-3 rounded-lg border border-glass-border">
+                    <div className="flex justify-between items-center mb-4 text-sm bg-glass-bg p-3 rounded-lg border border-glass-border">
                       <span className="text-text-secondary">Price:</span>
                       <span className="font-bold text-accent-neon">₹{event.merchDetails?.price}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-4 text-sm bg-white/5 p-3 rounded-lg border border-glass-border">
+                    <div className="flex justify-between items-center mb-4 text-sm bg-glass-bg p-3 rounded-lg border border-glass-border">
                       <span className="text-text-secondary">Stock left:</span>
                       <span className="font-bold">{event.merchDetails?.stockQuantity}</span>
                     </div>
@@ -261,7 +293,8 @@ const EventDetails = () => {
                           disabled={!canRegister || registering}
                           value={purchaseDetails.size}
                           onChange={(e) => setPurchaseDetails({...purchaseDetails, size: e.target.value})}
-                          className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                          className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 focus:border-accent-neon"
+                          style={{ color: 'var(--text-primary)' }}
                         >
                           <option value="">Choose a size...</option>
                           {event.merchDetails.allowedSizes.map(size => (
@@ -281,7 +314,8 @@ const EventDetails = () => {
                         disabled={!canRegister || registering}
                         value={purchaseDetails.quantity}
                         onChange={(e) => setPurchaseDetails({...purchaseDetails, quantity: parseInt(e.target.value)})}
-                        className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon"
+                        className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 focus:border-accent-neon"
+                        style={{ color: 'var(--text-primary)' }}
                       />
                     </div>
                   </>
@@ -297,6 +331,7 @@ const EventDetails = () => {
               </form>
             </div>
           </div>
+          )}
         </div>
       </main>
     </div>

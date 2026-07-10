@@ -9,7 +9,9 @@ const router = express.Router();
 // @access  Private
 router.get('/profile', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
+    const user = await User.findById(req.user._id)
+      .select('-password')
+      .populate('preferences.followedOrganizers', 'organizerProfile.organizerName');
     if (user) {
       res.json(user);
     } else {
@@ -177,14 +179,30 @@ router.put('/admin/organizers/:id/toggle-status', protect, admin, async (req, re
 });
 
 // @route   DELETE /api/users/admin/organizers/:id
-// @desc    Delete organizer permanently
+// @desc    Delete organizer permanently and cascade delete events and tickets
 // @access  Admin
 router.delete('/admin/organizers/:id', protect, admin, async (req, res) => {
   try {
+    const Event = require('../models/Event');
+    const Ticket = require('../models/Ticket');
+    
+    // Find all events belonging to this organizer
+    const events = await Event.find({ organizerId: req.params.id });
+    const eventIds = events.map(e => e._id);
+    
+    // Delete tickets associated with these events
+    if (eventIds.length > 0) {
+      await Ticket.deleteMany({ event: { $in: eventIds } });
+    }
+    
+    // Delete the events
+    await Event.deleteMany({ organizerId: req.params.id });
+    
+    // Delete the organizer
     const result = await User.deleteOne({ _id: req.params.id, role: 'Organizer' });
     if (result.deletedCount === 0) return res.status(404).json({ message: 'Organizer not found' });
     
-    res.json({ message: 'Organizer deleted permanently' });
+    res.json({ message: 'Organizer, events, and tickets deleted permanently' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete organizer' });
   }

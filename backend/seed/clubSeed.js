@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/mern').then(() => console.log('MongoDB connected for seeding clubs'))
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  });
 
 const clubsList = [
   "0x1337: The Hacking Club",
@@ -63,12 +56,9 @@ const seedClubs = async () => {
       
       const existing = await User.findOne({ email });
       if (!existing) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(passwordStr, salt);
-        
         await User.create({
           email: email,
-          password: hashedPassword,
+          password: passwordStr,
           role: 'Organizer',
           organizerProfile: {
             organizerName: clubName,
@@ -88,4 +78,16 @@ const seedClubs = async () => {
   }
 };
 
-seedClubs();
+const run = async () => {
+  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/mern';
+  try {
+    await mongoose.connect(uri);
+    console.log('MongoDB connected for seeding clubs');
+    await seedClubs();
+  } catch (err) {
+    console.error('Fatal error:', err);
+    process.exit(1);
+  }
+};
+
+run();

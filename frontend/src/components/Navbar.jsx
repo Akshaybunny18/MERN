@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Users, User, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, User, LogOut, Image } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  let userInfo = null;
+  try { userInfo = JSON.parse(localStorage.getItem('userInfo')); } catch (_) {}
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
@@ -14,92 +16,97 @@ const Navbar = () => {
 
   if (!userInfo) return null;
 
-  const isActive = (path) => {
-    return location.pathname.startsWith(path) 
-      ? 'text-accent-neon border-b-2 border-accent-neon' 
-      : 'text-text-secondary hover:text-white transition-colors';
+  const isActive = (path) =>
+    location.pathname.startsWith(path)
+      ? { color: 'var(--text-primary)', borderBottom: '2px solid var(--accent-primary)', paddingBottom: '2px' }
+      : { color: 'var(--text-secondary)' };
+
+  const linkStyle = {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '0.4rem 0.75rem', fontSize: '0.875rem', fontWeight: 500,
+    textDecoration: 'none', transition: 'color 0.2s',
   };
 
   return (
-    <nav className="glass-panel sticky top-0 z-50 rounded-none border-t-0 border-x-0 border-b border-glass-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/dashboard" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg">
-                <LayoutDashboard className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gradient">Infinium</span>
-            </Link>
-            <div className="hidden md:block ml-10">
-              <div className="flex items-baseline space-x-6">
-                
-                {/* PARTICIPANT LINKS */}
-                {userInfo.role === 'Participant' && (
-                  <>
-                    <Link to="/dashboard" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/dashboard')}`}>
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
-                    </Link>
-                    <Link to="/events" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/events')}`}>
-                      <Calendar className="w-4 h-4" /> Browse Events
-                    </Link>
-                    <Link to="/organizers" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/organizers')}`}>
-                      <Users className="w-4 h-4" /> Clubs/Organizers
-                    </Link>
-                  </>
-                )}
+    <nav style={{
+      position: 'sticky', top: 0, zIndex: 50,
+      background: 'var(--nav-bg)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderBottom: '1px solid var(--glass-border)',
+    }}>
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
 
-                {/* ORGANIZER LINKS */}
-                {userInfo.role === 'Organizer' && (
-                  <>
-                    <Link to="/organizer/dashboard" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/organizer/dashboard')}`}>
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
-                    </Link>
-                    <Link to="/organizer/create-event" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/organizer/create-event')}`}>
-                      <Calendar className="w-4 h-4" /> Create Event
-                    </Link>
-                    <Link to="/events" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/events')}`}>
-                      <Calendar className="w-4 h-4" /> Ongoing Events
-                    </Link>
-                  </>
-                )}
-
-                {/* ADMIN LINKS */}
-                {userInfo.role === 'Admin' && (
-                  <>
-                    <Link to="/admin/dashboard" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/admin/dashboard')}`}>
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
-                    </Link>
-                    <Link to="/admin/organizers" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/admin/organizers')}`}>
-                      <Users className="w-4 h-4" /> Manage Organizers
-                    </Link>
-                    <Link to="/admin/reset-requests" className={`px-3 py-5 text-sm font-medium flex items-center gap-2 ${isActive('/admin/reset-requests')}`}>
-                      <User className="w-4 h-4" /> Password Resets
-                    </Link>
-                  </>
-                )}
-
-              </div>
+          {/* Logo */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <div style={{
+              width: '32px', height: '32px', borderRadius: '8px',
+              background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <LayoutDashboard size={18} style={{ color: 'var(--bg-primary)' }} />
             </div>
+            <span className="text-gradient" style={{ fontSize: '1.2rem', fontWeight: 700 }}>Infinium</span>
+          </Link>
+
+          {/* Nav Links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+
+            {/* PARTICIPANT */}
+            {userInfo.role === 'Participant' && (<>
+              <Link to="/dashboard"   style={{ ...linkStyle, ...isActive('/dashboard') }}><LayoutDashboard size={15} /> Dashboard</Link>
+              <Link to="/events"      style={{ ...linkStyle, ...isActive('/events') }}><Calendar size={15} /> Events</Link>
+              <Link to="/organizers"  style={{ ...linkStyle, ...isActive('/organizers') }}><Users size={15} /> Clubs</Link>
+              <Link to="/gallery"     style={{ ...linkStyle, ...isActive('/gallery') }}><Image size={15} /> Gallery</Link>
+            </>)}
+
+            {/* ORGANIZER */}
+            {userInfo.role === 'Organizer' && (<>
+              <Link to="/organizer/dashboard"    style={{ ...linkStyle, ...isActive('/organizer/dashboard') }}><LayoutDashboard size={15} /> Dashboard</Link>
+              <Link to="/organizer/create-event" style={{ ...linkStyle, ...isActive('/organizer/create-event') }}><Calendar size={15} /> Create Event</Link>
+              <Link to="/events"                 style={{ ...linkStyle, ...isActive('/events') }}><Calendar size={15} /> All Events</Link>
+              <Link to="/gallery"                style={{ ...linkStyle, ...isActive('/gallery') }}><Image size={15} /> Gallery</Link>
+            </>)}
+
+            {/* ADMIN */}
+            {userInfo.role === 'Admin' && (<>
+              <Link to="/admin/dashboard"      style={{ ...linkStyle, ...isActive('/admin/dashboard') }}><LayoutDashboard size={15} /> Dashboard</Link>
+              <Link to="/admin/organizers"     style={{ ...linkStyle, ...isActive('/admin/organizers') }}><Users size={15} /> Organizers</Link>
+              <Link to="/admin/reset-requests" style={{ ...linkStyle, ...isActive('/admin/reset-requests') }}><User size={15} /> Resets</Link>
+              <Link to="/events"               style={{ ...linkStyle, ...isActive('/events') }}><Calendar size={15} /> Events</Link>
+            </>)}
           </div>
-          
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6 space-x-4">
-              {userInfo.role !== 'Admin' && (
-                <Link to="/profile" className={`p-2 rounded-full flex items-center gap-2 ${isActive('/profile')}`}>
-                  <User className="w-5 h-5" />
-                  <span className="text-sm font-medium">Profile</span>
-                </Link>
-              )}
-              
-              <button
-                onClick={handleLogout}
-                className="p-2 text-text-secondary hover:text-red-400 transition-colors flex items-center gap-2"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="text-sm font-medium">Logout</span>
-              </button>
-            </div>
+
+          {/* Right side: Avatar + Profile + Theme + Logout */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* DiceBear Avatar */}
+            <img
+              src={`https://api.dicebear.com/9.x/pixel-art/gif?seed=${encodeURIComponent(userInfo.email)}&size=32`}
+              alt="avatar"
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid var(--glass-border)' }}
+            />
+
+            {userInfo.role !== 'Admin' && (
+              <Link to="/profile" style={{ ...linkStyle, ...isActive('/profile') }}>
+                <User size={15} /> Profile
+              </Link>
+            )}
+
+            <ThemeToggle />
+
+            <button
+              onClick={handleLogout}
+              style={{
+                ...linkStyle,
+                color: 'var(--text-secondary)',
+                background: 'none', border: 'none', cursor: 'pointer',
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#ef4444'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              <LogOut size={15} /> Logout
+            </button>
           </div>
         </div>
       </div>

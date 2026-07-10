@@ -28,7 +28,8 @@ const LoginCard = () => {
       
       if (response.ok) {
         localStorage.setItem('userInfo', JSON.stringify(data));
-        navigate('/dashboard');
+        const dashMap = { Admin: '/admin/dashboard', Organizer: '/organizer/dashboard', Participant: '/dashboard' };
+        navigate(dashMap[data.role] || '/dashboard');
       } else {
         setError(data.message || 'Login failed');
       }

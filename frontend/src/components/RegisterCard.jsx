@@ -97,7 +97,7 @@ const RegisterCard = () => {
                 <select 
                   value={participantType}
                   onChange={(e) => setParticipantType(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white focus:outline-none focus:border-accent-neon transition-colors appearance-none"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary focus:outline-none focus:border-accent-neon transition-colors appearance-none"
                 >
                   <option value="IIIT">IIIT Student</option>
                   <option value="Non-IIIT">Non-IIIT Participant</option>
@@ -117,7 +117,7 @@ const RegisterCard = () => {
                   disabled={participantType === 'IIIT'}
                   value={participantType === 'IIIT' ? 'IIIT' : college}
                   onChange={(e) => setCollege(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors disabled:opacity-50"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors disabled:opacity-50"
                   placeholder="Your College"
                 />
               </div>
@@ -136,7 +136,7 @@ const RegisterCard = () => {
                   required 
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder="John"
                 />
               </div>
@@ -153,7 +153,7 @@ const RegisterCard = () => {
                   required 
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder="Doe"
                 />
               </div>
@@ -172,7 +172,7 @@ const RegisterCard = () => {
                   required 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder={participantType === 'IIIT' ? "you@iiit.ac.in" : "you@example.com"}
                 />
               </div>
@@ -189,7 +189,7 @@ const RegisterCard = () => {
                   required 
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder="+91 9876543210"
                 />
               </div>
@@ -208,7 +208,7 @@ const RegisterCard = () => {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder="••••••••"
                   minLength="6"
                 />
@@ -226,7 +226,7 @@ const RegisterCard = () => {
                   required 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                   placeholder="••••••••"
                   minLength="6"
                 />

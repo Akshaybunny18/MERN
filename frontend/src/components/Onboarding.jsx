@@ -64,7 +64,7 @@ const Onboarding = () => {
               onClick={() => toggleInterest(interest)}
               className={`px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-2 ${
                 selectedInterests.includes(interest)
-                  ? 'bg-accent-primary/30 border-accent-neon text-white shadow-[0_0_10px_rgba(168,85,247,0.4)]'
+                  ? 'bg-accent-primary/30 border-accent-neon text-text-primary shadow-[0_0_10px_rgba(168,85,247,0.4)]'
                   : 'bg-bg-secondary border-glass-border text-text-secondary hover:border-text-secondary'
               }`}
             >
@@ -77,7 +77,7 @@ const Onboarding = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <button 
             onClick={handleSkip}
-            className="btn bg-bg-secondary border border-glass-border text-text-secondary hover:text-white transition-colors"
+            className="btn bg-bg-secondary border border-glass-border text-text-secondary hover:text-text-primary transition-colors"
           >
             Skip for now
           </button>

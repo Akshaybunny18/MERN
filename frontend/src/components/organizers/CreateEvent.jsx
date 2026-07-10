@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import { Calendar, Tag, Info, FileText, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const CreateEvent = () => {
   const navigate = useNavigate();
@@ -146,15 +148,15 @@ const CreateEvent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Start Date</label>
-                  <input type="datetime-local" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.startDate ? new Date(formData.startDate) : null} onChange={date => setFormData({...formData, startDate: date.toISOString()})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">End Date</label>
-                  <input type="datetime-local" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.endDate ? new Date(formData.endDate) : null} onChange={date => setFormData({...formData, endDate: date.toISOString()})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Reg. Deadline</label>
-                  <input type="datetime-local" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.registrationDeadline} onChange={e => setFormData({...formData, registrationDeadline: e.target.value})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.registrationDeadline ? new Date(formData.registrationDeadline) : null} onChange={date => setFormData({...formData, registrationDeadline: date.toISOString()})} />
                 </div>
               </div>
             </div>

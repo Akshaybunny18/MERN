@@ -79,8 +79,12 @@ const ClubsList = () => {
                   style={{ animationDelay: `${i * 0.05}s` }}
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg">
-                      <Building className="w-6 h-6 text-white" />
+                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', overflow: 'hidden', border: '1px solid var(--glass-border)', flexShrink: 0 }}>
+                      <img
+                        src={`https://api.dicebear.com/9.x/bottts/svg?seed=${encodeURIComponent(org.organizerProfile?.organizerName || org._id)}&size=48`}
+                        alt={org.organizerProfile?.organizerName}
+                        style={{ width: '100%', height: '100%' }}
+                      />
                     </div>
                     {userInfo?.role === 'Participant' && (
                       <button 
