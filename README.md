@@ -50,8 +50,13 @@ If you prefer to run the application locally for development, you will need Node
    ```bash
    npm start
    # Or use 'node server.js'
-   ```
    *The backend will run on `http://localhost:5000`.*
+
+   > **Troubleshooting `ECONNREFUSED` Redis Errors:**
+   > Because the backend expects a Redis cache, running `npm start` locally without a Redis server will cause `ECONNREFUSED 127.0.0.1:6379` errors in the console. The server will still run and fall back to MongoDB, but to fix the logs, either run the whole stack via Docker Compose, or start a local Redis container in the background:
+   > ```bash
+   > docker run --name local-redis -p 6379:6379 -d redis:7-alpine
+   > ```
 
 ### 2. Start the Frontend
 1. Open a **new** terminal and navigate to the frontend folder:
