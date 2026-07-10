@@ -102,7 +102,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary text-white pb-20">
+    <div className="min-h-screen bg-bg-primary text-text-primary pb-20">
       <Navbar />
       
       <main className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
@@ -112,7 +112,7 @@ const CreateEvent = () => {
         <div className="flex justify-between mb-8 relative">
           <div className="absolute top-1/2 left-0 right-0 h-1 bg-glass-border -z-10 transform -translate-y-1/2"></div>
           {[1, 2, 3].map(i => (
-            <div key={i} className={`w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors ${step >= i ? 'bg-accent-primary text-white' : 'bg-bg-secondary border border-glass-border text-text-secondary'}`}>
+            <div key={i} className={`w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors ${step >= i ? 'bg-accent-primary text-bg-primary' : 'bg-bg-secondary border border-glass-border text-text-secondary'}`}>
               {i}
             </div>
           ))}
@@ -129,11 +129,11 @@ const CreateEvent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Event Name</label>
-                  <input type="text" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                  <input type="text" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Event Type</label>
-                  <select className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.eventType} onChange={e => setFormData({...formData, eventType: e.target.value})}>
+                  <select className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.eventType} onChange={e => setFormData({...formData, eventType: e.target.value})}>
                     <option value="Normal">Normal Event (Hackathon, Talk, etc)</option>
                     <option value="Merchandise">Merchandise Sale</option>
                   </select>
@@ -142,21 +142,21 @@ const CreateEvent = () => {
               
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-2">Description</label>
-                <textarea rows="4" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}></textarea>
+                <textarea rows="4" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}></textarea>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Start Date</label>
-                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.startDate ? new Date(formData.startDate) : null} onChange={date => setFormData({...formData, startDate: date.toISOString()})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" selected={formData.startDate ? new Date(formData.startDate) : null} onChange={date => setFormData({...formData, startDate: date.toISOString()})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">End Date</label>
-                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.endDate ? new Date(formData.endDate) : null} onChange={date => setFormData({...formData, endDate: date.toISOString()})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" selected={formData.endDate ? new Date(formData.endDate) : null} onChange={date => setFormData({...formData, endDate: date.toISOString()})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Reg. Deadline</label>
-                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" selected={formData.registrationDeadline ? new Date(formData.registrationDeadline) : null} onChange={date => setFormData({...formData, registrationDeadline: date.toISOString()})} />
+                  <DatePicker showTimeSelect dateFormat="Pp" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" selected={formData.registrationDeadline ? new Date(formData.registrationDeadline) : null} onChange={date => setFormData({...formData, registrationDeadline: date.toISOString()})} />
                 </div>
               </div>
             </div>
@@ -170,11 +170,11 @@ const CreateEvent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Eligibility (Optional)</label>
-                  <input type="text" placeholder="e.g., Only First Years" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.eligibility} onChange={e => setFormData({...formData, eligibility: e.target.value})} />
+                  <input type="text" placeholder="e.g., Only First Years" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.eligibility} onChange={e => setFormData({...formData, eligibility: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Tags (Comma separated)</label>
-                  <input type="text" placeholder="Tech, Coding, Workshop" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.tags} onChange={e => setFormData({...formData, tags: e.target.value})} />
+                  <input type="text" placeholder="Tech, Coding, Workshop" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.tags} onChange={e => setFormData({...formData, tags: e.target.value})} />
                 </div>
               </div>
 
@@ -182,26 +182,26 @@ const CreateEvent = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-glass-border">
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Registration Fee (₹)</label>
-                    <input type="number" min="0" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.registrationFee} onChange={e => setFormData({...formData, registrationFee: e.target.value})} />
+                    <input type="number" min="0" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.registrationFee} onChange={e => setFormData({...formData, registrationFee: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Max Participants (Leave blank for unlimited)</label>
-                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.registrationLimit} onChange={e => setFormData({...formData, registrationLimit: e.target.value})} />
+                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.registrationLimit} onChange={e => setFormData({...formData, registrationLimit: e.target.value})} />
                   </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-glass-border">
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Item Price (₹)</label>
-                    <input type="number" min="0" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.registrationFee} onChange={e => setFormData({...formData, registrationFee: e.target.value})} />
+                    <input type="number" min="0" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.registrationFee} onChange={e => setFormData({...formData, registrationFee: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Stock Quantity</label>
-                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.merchDetails.stockQuantity} onChange={e => setFormData({...formData, merchDetails: {...formData.merchDetails, stockQuantity: e.target.value}})} />
+                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.merchDetails.stockQuantity} onChange={e => setFormData({...formData, merchDetails: {...formData.merchDetails, stockQuantity: e.target.value}})} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Max Per Person</label>
-                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-white" value={formData.merchDetails.purchaseLimit} onChange={e => setFormData({...formData, merchDetails: {...formData.merchDetails, purchaseLimit: e.target.value}})} />
+                    <input type="number" min="1" className="w-full p-3 bg-bg-primary border border-glass-border rounded-lg text-text-primary" value={formData.merchDetails.purchaseLimit} onChange={e => setFormData({...formData, merchDetails: {...formData.merchDetails, purchaseLimit: e.target.value}})} />
                   </div>
                 </div>
               )}
@@ -219,11 +219,11 @@ const CreateEvent = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div className="md:col-span-2">
                     <label className="block text-xs font-medium text-text-secondary mb-1">Field Question/Label</label>
-                    <input type="text" placeholder="e.g., T-Shirt Size" className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-white text-sm" value={newField.fieldName} onChange={e => setNewField({...newField, fieldName: e.target.value})} />
+                    <input type="text" placeholder="e.g., T-Shirt Size" className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-text-primary text-sm" value={newField.fieldName} onChange={e => setNewField({...newField, fieldName: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-text-secondary mb-1">Type</label>
-                    <select className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-white text-sm" value={newField.fieldType} onChange={e => setNewField({...newField, fieldType: e.target.value})}>
+                    <select className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-text-primary text-sm" value={newField.fieldType} onChange={e => setNewField({...newField, fieldType: e.target.value})}>
                       <option value="text">Text Entry</option>
                       <option value="textarea">Long Paragraph</option>
                       <option value="select">Dropdown</option>
@@ -240,11 +240,11 @@ const CreateEvent = () => {
                 {['select', 'radio'].includes(newField.fieldType) && (
                   <div className="mt-4">
                     <label className="block text-xs font-medium text-text-secondary mb-1">Options (Comma separated)</label>
-                    <input type="text" placeholder="Small, Medium, Large" className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-white text-sm" value={newField.options} onChange={e => setNewField({...newField, options: e.target.value})} />
+                    <input type="text" placeholder="Small, Medium, Large" className="w-full p-2 bg-bg-secondary border border-glass-border rounded text-text-primary text-sm" value={newField.options} onChange={e => setNewField({...newField, options: e.target.value})} />
                   </div>
                 )}
                 
-                <button onClick={addCustomField} type="button" className="mt-4 text-sm bg-glass-panel border border-glass-border px-4 py-2 rounded text-white hover:border-accent-neon transition-colors flex items-center gap-2">
+                <button onClick={addCustomField} type="button" className="mt-4 text-sm bg-glass-panel border border-glass-border px-4 py-2 rounded text-text-primary hover:border-accent-neon transition-colors flex items-center gap-2">
                   <Plus className="w-4 h-4"/> Add Field
                 </button>
               </div>
@@ -283,7 +283,7 @@ const CreateEvent = () => {
           {/* Action Buttons */}
           <div className="flex justify-between mt-10 pt-6 border-t border-glass-border">
             {step > 1 ? (
-              <button onClick={handlePrev} className="btn bg-glass-panel border border-glass-border text-white">Back</button>
+              <button onClick={handlePrev} className="btn bg-glass-panel border border-glass-border text-text-primary">Back</button>
             ) : <div></div>}
             
             <div className="flex gap-4">
@@ -291,7 +291,7 @@ const CreateEvent = () => {
                 <button onClick={handleNext} className="btn btn-primary">Continue</button>
               ) : (
                 <>
-                  <button disabled={loading} onClick={() => handleSave('Draft')} className="btn bg-glass-panel border border-glass-border text-white">Save as Draft</button>
+                  <button disabled={loading} onClick={() => handleSave('Draft')} className="btn bg-glass-panel border border-glass-border text-text-primary">Save as Draft</button>
                   <button disabled={loading} onClick={() => handleSave('Published')} className="btn btn-primary bg-gradient-to-r from-accent-primary to-accent-neon shadow-lg shadow-accent-primary/20">Publish Event</button>
                 </>
               )}

@@ -39,8 +39,8 @@ const Dashboard = () => {
 
   // Filter logic
   const now = new Date();
-  
-  const upcomingTickets = tickets.filter(t => 
+
+  const upcomingTickets = tickets.filter(t =>
     new Date(t.event?.startDate) > now && t.status === 'Registered'
   );
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
         <header className="mb-12">
           <h1 className="text-3xl font-bold text-gradient mb-2">My Dashboard</h1>
@@ -68,13 +68,13 @@ const Dashboard = () => {
             <CalendarIcon className="w-6 h-6 text-accent-neon" />
             Upcoming Events
           </h2>
-          
+
           {loading ? (
             <div className="text-text-secondary">Loading...</div>
           ) : upcomingTickets.length === 0 ? (
             <div className="glass-panel p-8 text-center text-text-secondary">
               <p className="mb-4">No upcoming events found.</p>
-              <button 
+              <button
                 onClick={() => navigate('/events')}
                 className="btn btn-primary inline-block"
               >
@@ -95,8 +95,8 @@ const Dashboard = () => {
                   <p className="text-sm mb-4">
                     {new Date(ticket.event?.startDate).toLocaleDateString()}
                   </p>
-                  
-                  <button 
+
+                  <button
                     onClick={() => setSelectedTicket(ticket)}
                     className="w-full btn btn-primary py-2 text-sm flex justify-center items-center gap-2"
                   >
@@ -111,18 +111,17 @@ const Dashboard = () => {
         {/* Participation History */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Participation History</h2>
-          
+
           {/* Tabs */}
           <div className="flex flex-wrap gap-2 mb-6 border-b border-glass-border pb-2">
             {['Normal', 'Merchandise', 'Completed', 'Cancelled/Rejected'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-t-lg transition-colors font-medium text-sm ${
-                  activeTab === tab 
-                    ? 'bg-glass-bg border-b-2 border-accent-neon text-white' 
-                    : 'text-text-secondary hover:text-white'
-                }`}
+                className={`px-4 py-2 rounded-t-lg transition-colors font-medium text-sm ${activeTab === tab
+                    ? 'bg-glass-bg border-b-2 border-accent-neon text-text-primary'
+                    : 'text-text-secondary hover:text-text-primary'
+                  }`}
               >
                 {tab}
               </button>
@@ -162,17 +161,16 @@ const Dashboard = () => {
                           {ticket.event?.organizerId?.organizerProfile?.organizerName}
                         </td>
                         <td className="p-4">
-                          <span className={`px-2 py-1 text-xs rounded ${
-                            ticket.status === 'Completed' ? 'bg-green-500/20 text-green-400' :
-                            ['Cancelled', 'Rejected'].includes(ticket.status) ? 'bg-red-500/20 text-red-400' :
-                            'bg-blue-500/20 text-blue-400'
-                          }`}>
+                          <span className={`px-2 py-1 text-xs rounded ${ticket.status === 'Completed' ? 'bg-green-500/20 text-green-400' :
+                              ['Cancelled', 'Rejected'].includes(ticket.status) ? 'bg-red-500/20 text-red-400' :
+                                'bg-blue-500/20 text-blue-400'
+                            }`}>
                             {ticket.status}
                           </span>
                         </td>
                         <td className="p-4 text-sm">{ticket.teamName || '-'}</td>
                         <td className="p-4">
-                          <button 
+                          <button
                             onClick={() => setSelectedTicket(ticket)}
                             className="text-accent-neon hover:underline text-sm font-mono flex items-center gap-1"
                           >
@@ -193,18 +191,18 @@ const Dashboard = () => {
       {selectedTicket && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="glass-panel w-full max-w-sm overflow-hidden flex flex-col relative">
-            <button 
+            <button
               onClick={() => setSelectedTicket(null)}
               className="absolute top-4 right-4 p-1 rounded-full bg-black/20 hover:bg-black/40 transition-colors"
             >
-              <X className="w-5 h-5 text-white" />
+              <X className="w-5 h-5 text-text-primary" />
             </button>
-            
+
             <div className="bg-gradient-to-br from-accent-primary to-accent-secondary p-6 text-center">
-              <h3 className="text-xl font-bold text-white mb-1">{selectedTicket.event?.name}</h3>
-              <p className="text-white/80 text-sm">{selectedTicket.type} Ticket</p>
+              <h3 className="text-xl font-bold text-bg-primary mb-1">{selectedTicket.event?.name}</h3>
+              <p className="text-bg-primary opacity-80 text-sm">{selectedTicket.type} Ticket</p>
             </div>
-            
+
             <div className="p-6 bg-white flex flex-col items-center">
               {selectedTicket.qrCodeData ? (
                 <img src={selectedTicket.qrCodeData} alt="QR Code" className="w-48 h-48 mb-4 border-4 border-white rounded-xl shadow-md" />
@@ -218,7 +216,7 @@ const Dashboard = () => {
               </div>
               <p className="text-xs text-gray-500 uppercase tracking-wide">Valid Entry Pass</p>
             </div>
-            
+
             <div className="p-4 bg-bg-secondary text-sm">
               <div className="flex justify-between mb-2">
                 <span className="text-text-secondary">Participant:</span>

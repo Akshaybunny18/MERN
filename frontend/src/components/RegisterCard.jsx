@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, UserPlus, Shield, User as UserIcon, Building, Phone } from 'lucide-react';
+import { Mail, Lock, UserPlus, Shield, User as UserIcon, Building, Phone, Home } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const RegisterCard = () => {
   const [firstName, setFirstName] = useState('');
@@ -73,8 +74,16 @@ const RegisterCard = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 py-12">
-      <div className="glass-panel animate-fade-in max-w-2xl w-full p-8">
+    <div className="flex items-center justify-center min-h-screen p-4 py-12 relative">
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 flex items-center gap-4 z-50">
+        <Link to="/" className="text-sm text-text-secondary hover:text-text-primary transition-colors flex items-center gap-2 font-medium bg-glass-panel px-3 py-1.5 rounded-full border border-glass-border">
+          <Home className="w-4 h-4" /> Home
+        </Link>
+        <ThemeToggle />
+      </div>
+
+      <div className="glass-panel animate-fade-in max-w-2xl w-full p-8 mt-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gradient mb-2">Create Account</h2>
           <p className="text-text-secondary">Join us as a participant</p>

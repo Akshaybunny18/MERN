@@ -51,7 +51,7 @@ const LazyImage = ({ src, alt, className, style, onError }) => {
 };
 
 const CATEGORIES = ['All', 'Hackathons', 'Cultural', 'Sports', 'Workshops', 'Tech Talks'];
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 10;
 
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
@@ -86,7 +86,7 @@ const Gallery = () => {
       });
       setPhotos(prev => page === 1 ? newPhotos : [...prev, ...newPhotos]);
       setPage(prev => prev + 1);
-      setHasMore(page < 5); // limit to 5 pages (60 photos)
+      setHasMore(page < 2); // limit to 2 pages (20 photos)
       setLoading(false);
     }, 600);
   }, [loading, hasMore, page, category, getImageUrl]);
@@ -147,7 +147,7 @@ const Gallery = () => {
                 borderRadius: '9999px',
                 border: '1px solid var(--glass-border)',
                 background: category === cat ? 'var(--accent-primary)' : 'var(--glass-bg)',
-                color: category === cat ? '#000' : 'var(--text-primary)',
+                color: category === cat ? 'var(--btn-primary-text)' : 'var(--text-primary)',
                 fontWeight: category === cat ? '700' : '500',
                 cursor: 'pointer',
                 fontSize: '0.85rem',

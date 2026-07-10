@@ -82,7 +82,7 @@ const Navbar = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {/* DiceBear Avatar */}
             <img
-              src={`https://api.dicebear.com/9.x/pixel-art/gif?seed=${encodeURIComponent(userInfo.email)}&size=32`}
+              src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(userInfo.email)}&size=32`}
               alt="avatar"
               style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid var(--glass-border)' }}
             />

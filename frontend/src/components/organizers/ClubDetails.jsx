@@ -52,7 +52,7 @@ const ClubDetails = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 p-8 max-w-5xl mx-auto w-full">
         {/* Organizer Header */}
         <div className="glass-panel p-8 mb-12 animate-fade-in flex flex-col md:flex-row gap-8 items-start">

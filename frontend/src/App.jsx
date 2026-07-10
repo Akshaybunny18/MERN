@@ -20,14 +20,21 @@ import Gallery from './components/Gallery';
 import Unauthorized from './components/Unauthorized';
 import ProtectedRoute, { PublicOnlyRoute } from './components/ProtectedRoute';
 import ParticlesBackground from './components/ParticlesBackground';
+import ThemeToggle from './components/ThemeToggle';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
 // ─── Typewriter ───────────────────────────────────────────────────────────────
-const Typewriter = ({ text, onComplete }) => {
+const Typewriter = ({ text, onComplete, skip }) => {
   const [displayText, setDisplayText] = React.useState('');
 
   React.useEffect(() => {
+    if (skip) {
+      setDisplayText(text);
+      if (onComplete) onComplete();
+      return;
+    }
+
     let currentIndex = 0;
     const interval = setInterval(() => {
       if (currentIndex <= text.length) {
@@ -40,7 +47,7 @@ const Typewriter = ({ text, onComplete }) => {
     }, 100);
     return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
+  }, [text, skip]);
 
   return <span>{displayText}</span>;
 };
@@ -48,20 +55,34 @@ const Typewriter = ({ text, onComplete }) => {
 // ─── Landing Page ─────────────────────────────────────────────────────────────
 const LandingPage = () => {
   const [typingComplete, setTypingComplete] = React.useState(false);
+  const [skipAnimation, setSkipAnimation] = React.useState(false);
+
+  const handleSkip = () => {
+    if (!typingComplete) {
+      setSkipAnimation(true);
+      setTypingComplete(true);
+    }
+  };
 
   return (
-    <div style={{
+    <div 
+      onClick={handleSkip}
+      style={{
       position: 'relative', padding: '4rem 2rem',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', minHeight: '100vh', overflow: 'hidden',
+      cursor: typingComplete ? 'default' : 'pointer'
     }}>
+      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 20 }}>
+        <ThemeToggle />
+      </div>
       <ParticlesBackground />
       <div className="glass-panel animate-fade-in" style={{
         padding: '3rem', maxWidth: '800px', width: '100%',
         textAlign: 'center', position: 'relative', zIndex: 10,
       }}>
         <h1 className="text-gradient animate-float" style={{ fontSize: '3.5rem', marginBottom: '1rem', minHeight: '4.5rem' }}>
-          <Typewriter text="Welcome to Infinium" onComplete={() => setTypingComplete(true)} />
+          <Typewriter text="Welcome to Infinium" onComplete={() => setTypingComplete(true)} skip={skipAnimation} />
           {!typingComplete && <span style={{ animation: 'none', opacity: 0.7 }}>|</span>}
         </h1>
 

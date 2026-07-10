@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Home } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const LoginCard = () => {
   const [email, setEmail] = useState('');
@@ -41,7 +42,15 @@ const LoginCard = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="flex items-center justify-center min-h-screen p-4 relative">
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 flex items-center gap-4 z-50">
+        <Link to="/" className="text-sm text-text-secondary hover:text-text-primary transition-colors flex items-center gap-2 font-medium bg-glass-panel px-3 py-1.5 rounded-full border border-glass-border">
+          <Home className="w-4 h-4" /> Home
+        </Link>
+        <ThemeToggle />
+      </div>
+
       <div className="glass-panel animate-fade-in max-w-md w-full p-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gradient mb-2">Welcome Back</h2>
@@ -66,7 +75,7 @@ const LoginCard = () => {
                 required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                 placeholder="you@example.com"
               />
             </div>
@@ -83,7 +92,7 @@ const LoginCard = () => {
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-white placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
+                className="block w-full pl-10 pr-3 py-3 border border-glass-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent-neon transition-colors"
                 placeholder="••••••••"
               />
             </div>
@@ -130,7 +139,7 @@ const LoginCard = () => {
             <h3 className="text-xl font-bold mb-4">Request Password Reset</h3>
             <p className="text-sm text-text-secondary mb-4">Only Organizers can request a password reset. Please provide a reason.</p>
             <textarea
-              className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-white focus:border-accent-neon mb-4"
+              className="w-full bg-bg-secondary border border-glass-border rounded-lg px-3 py-2 text-text-primary focus:border-accent-neon mb-4"
               rows="3"
               placeholder="Reason for reset..."
               value={resetReason}
@@ -139,7 +148,7 @@ const LoginCard = () => {
             <div className="flex justify-end gap-3">
               <button 
                 onClick={() => setShowResetModal(false)}
-                className="px-4 py-2 rounded-lg font-semibold text-text-secondary hover:text-white transition-colors"
+                className="px-4 py-2 rounded-lg font-semibold text-text-secondary hover:text-text-primary transition-colors"
               >
                 Cancel
               </button>

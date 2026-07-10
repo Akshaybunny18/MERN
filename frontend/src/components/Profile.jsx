@@ -193,7 +193,7 @@ const Profile = () => {
             {/* DiceBear animated GIF avatar */}
             <div style={{ position: 'relative', marginBottom: '1rem' }}>
               <img
-                src={`https://api.dicebear.com/9.x/pixel-art/gif?seed=${encodeURIComponent(profile.email)}&size=96`}
+                src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(profile.email)}&size=96`}
                 alt="Profile avatar"
                 style={{
                   width: '96px', height: '96px', borderRadius: '50%',

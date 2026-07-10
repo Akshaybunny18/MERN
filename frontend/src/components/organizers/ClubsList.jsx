@@ -91,8 +91,8 @@ const ClubsList = () => {
                         onClick={(e) => handleFollowToggle(e, org._id)}
                         className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${
                           isFollowing 
-                            ? 'bg-transparent border-glass-border text-text-secondary hover:text-white hover:border-white' 
-                            : 'bg-accent-primary border-accent-primary text-white hover:brightness-110 shadow-lg'
+                            ? 'bg-transparent border-glass-border text-text-secondary hover:text-text-primary hover:border-text-primary' 
+                            : 'bg-accent-primary border-accent-primary text-bg-primary hover:brightness-110 shadow-lg'
                         }`}
                       >
                         {isFollowing ? 'Following' : 'Follow'}

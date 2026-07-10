@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 const ParticlesBackground = () => {
   const canvasRef = useRef(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,6 +19,8 @@ const ParticlesBackground = () => {
     };
     window.addEventListener('resize', resize);
     resize();
+
+    const colorRGB = isDark ? '255, 255, 255' : '0, 0, 0';
 
     class Particle {
       constructor() {
@@ -36,7 +40,7 @@ const ParticlesBackground = () => {
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.fillStyle = `rgba(${colorRGB}, 0.5)`;
         ctx.fill();
       }
     }
@@ -61,7 +65,7 @@ const ParticlesBackground = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - dist / 100})`;
+            ctx.strokeStyle = `rgba(${colorRGB}, ${1 - dist / 100})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -75,7 +79,7 @@ const ParticlesBackground = () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <canvas
