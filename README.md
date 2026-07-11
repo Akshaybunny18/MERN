@@ -2,6 +2,38 @@
 
 This project is a complete MERN stack application featuring Role-Based Access Control, custom event registration, Dynamic Forms, and Observability.
 
+## 🚀 Cloud Deployment Guide
+
+This project is fully ready to be deployed to free cloud providers (Vercel, Render, MongoDB Atlas, Upstash).
+
+### Render (Backend) Environment Variables
+When deploying the Node.js backend to Render, add the following Environment Variables:
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `MONGO_URI` | `mongodb+srv://akshaybunny18:akshay123@cluster...` | Your MongoDB Atlas connection string |
+| `JWT_SECRET` | `any_random_text_you_want_like_super_secret_key` | Secret key for signing authentication tokens |
+| `REDIS_URI` | `rediss://default:gQAAAAAAAUF-AAIgcDE...` | Your Upstash Redis connection string (Optional) |
+| `FRONTEND_URL` | `https://infinium-fest.vercel.app` | The live URL of your deployed React app |
+
+*Note on Redis:* The backend is designed to be **fault-tolerant**. If you do not provide a `REDIS_URI`, the server will print a warning (`No REDIS_URI provided. Running without Redis cache.`) and will continue to work perfectly fine by querying MongoDB directly!
+
+### Vercel (Frontend) Environment Variables
+No environment variables are strictly required for Vercel because we configured a `vercel.json` rewrite rule that automatically routes `/api` requests to your live Render backend URL! However, if you didn't use `vercel.json`, you would set:
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_BACKEND_URL` | `https://mern-cqqz.onrender.com` | The live URL of your deployed Render Node.js backend |
+
+---
+
+## 🐋 Docker vs Local Routing (The Port Issue)
+Previously, the frontend `vite.config.js` was hardcoded to proxy `/api` requests to `http://localhost:5000`. 
+- **The Problem:** This works perfectly when running locally on your laptop, but when running inside Docker, `localhost` refers to the *frontend container itself*, not the backend container.
+- **The Solution:** We updated `vite.config.js` to use `process.env.BACKEND_URL || 'http://localhost:5000'`. In our `docker-compose.yml`, we explicitly set `BACKEND_URL=http://backend:5000`. This allows the app to seamlessly switch between Docker routing and local routing without any code changes!
+
+---
+
 ## 🚀 How to Run (Using Docker) - Recommended
 
 The easiest way to run the entire stack (Frontend, Backend, MongoDB, Nginx Proxy, Prometheus, Grafana) is using Docker Compose.
