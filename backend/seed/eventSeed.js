@@ -16,7 +16,20 @@ const eventsData = [
       registrationFee: 0,
       registrationLimit: 200,
       tags: ["Programming", "Contest", "Algorithm"],
-      status: "Ongoing"
+      status: "Published",
+      customFormStructure: [
+        {
+          fieldName: "Codeforces Handle",
+          fieldType: "text",
+          required: true
+        },
+        {
+          fieldName: "Preferred Programming Language",
+          fieldType: "select",
+          options: ["C++", "Python", "Java", "Rust"],
+          required: true
+        }
+      ]
     }
   },
   {
@@ -88,7 +101,7 @@ const eventsData = [
       registrationFee: 0,
       registrationLimit: 100,
       tags: ["Cybersecurity", "CTF", "Hacking"],
-      status: "Ongoing"
+      status: "Published"
     }
   },
   {
@@ -203,7 +216,20 @@ const eventsData = [
       endDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000),
       registrationFee: 0,
       tags: ["Literature", "Poetry", "Open Mic"],
-      status: "Published"
+      status: "Published",
+      customFormStructure: [
+        {
+          fieldName: "Will you be performing or just attending?",
+          fieldType: "radio",
+          options: ["Performing", "Attending"],
+          required: true
+        },
+        {
+          fieldName: "What theme is your poem? (If performing)",
+          fieldType: "textarea",
+          required: false
+        }
+      ]
     }
   }
 ];
@@ -211,7 +237,7 @@ const eventsData = [
 const seedEvents = async () => {
   try {
     let createdCount = 0;
-    
+
     // Clear existing events for a clean slate
     await Event.deleteMany({});
     console.log("Cleared existing events.");
@@ -219,7 +245,7 @@ const seedEvents = async () => {
     for (const item of eventsData) {
       const email = item.clubName.toLowerCase().replace(/[^a-z0-9]/g, '') + '@iiit.ac.in';
       const organizer = await User.findOne({ email });
-      
+
       if (organizer) {
         const newEvent = new Event({
           ...item.event,
@@ -232,7 +258,7 @@ const seedEvents = async () => {
         console.warn(`Could not find organizer for club: ${item.clubName}`);
       }
     }
-    
+
     console.log(`\nSuccessfully seeded ${createdCount} events.`);
     process.exit(0);
   } catch (error) {
