@@ -87,16 +87,38 @@ const BrowseEvents = () => {
             <div className="flex overflow-x-auto gap-6 pb-4 snap-x">
               {trending.map(event => (
                 <Link to={`/events/${event._id}`} key={event._id} className="snap-start min-w-[300px] glass-panel p-6 hover:border-orange-500/50 transition-colors group">
-                  <div className="inline-block px-2 py-1 rounded text-xs font-semibold bg-orange-500/20 text-orange-400 mb-3">
-                    {event.eventType}
+                  <div className="flex gap-2 mb-3">
+                    <div className="inline-block px-2 py-1 rounded text-xs font-semibold bg-orange-500/20 text-orange-400">
+                      {event.eventType}
+                    </div>
+                    <div className={`inline-block px-2 py-1 rounded text-xs font-semibold ${event.status === 'Ongoing' ? 'bg-blue-500/20 text-blue-400' : event.status === 'Closed' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+                      {event.status}
+                    </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{event.name}</h3>
                   <p className="text-sm text-text-secondary mb-4 line-clamp-2">
                     {event.description}
                   </p>
-                  <p className="text-sm font-medium">
-                    {new Date(event.startDate).toLocaleDateString()}
-                  </p>
+                  <div className="space-y-1 mt-auto">
+                    <p className="text-sm font-medium flex justify-between">
+                      <span className="text-text-secondary">Date:</span> 
+                      <span>{new Date(event.startDate).toLocaleDateString()}</span>
+                    </p>
+                    <p className="text-sm font-medium flex justify-between">
+                      <span className="text-text-secondary">Deadline:</span> 
+                      <span className="text-red-400">{new Date(event.registrationDeadline).toLocaleDateString()}</span>
+                    </p>
+                    <p className="text-sm font-bold flex justify-between">
+                      <span className="text-text-secondary">Fee:</span> 
+                      <span className="text-green-400">{event.registrationFee > 0 ? `₹${event.registrationFee}` : 'Free'}</span>
+                    </p>
+                    {event.registrationLimit && (
+                      <p className="text-sm font-bold flex justify-between border-t border-glass-border pt-1 mt-1">
+                        <span className="text-text-secondary">Limit:</span> 
+                        <span className="text-orange-400">{event.registrationLimit} spots</span>
+                      </p>
+                    )}
+                  </div>
                 </Link>
               ))}
             </div>
@@ -201,19 +223,23 @@ const BrowseEvents = () => {
                     {/* Event image */}
                     <div style={{ height: '140px', overflow: 'hidden', flexShrink: 0 }}>
                       <img
-                        src={`/local_files/event_placeholder.jpg`}
+                        src={`https://picsum.photos/seed/${event._id}/600/280`}
                         alt={event.name}
-                        onError={e => { e.target.src = `https://picsum.photos/seed/${event._id}/600/280`; }}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     </div>
                     <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <div className="flex justify-between items-start mb-4">
-                      <div className="inline-block px-2 py-1 rounded text-xs font-semibold bg-accent-primary/20 text-accent-neon">
-                        {event.eventType}
+                      <div className="flex gap-2">
+                        <div className="inline-block px-2 py-1 rounded text-xs font-semibold bg-accent-primary/20 text-accent-neon">
+                          {event.eventType}
+                        </div>
+                        <div className={`inline-block px-2 py-1 rounded text-xs font-semibold ${event.status === 'Ongoing' ? 'bg-blue-500/20 text-blue-400' : event.status === 'Closed' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+                          {event.status}
+                        </div>
                       </div>
-                      <div className="text-xs font-medium text-text-secondary bg-glass-bg px-2 py-1 rounded">
-                        {event.eligibility}
+                      <div className="text-xs font-medium text-text-secondary bg-glass-bg px-2 py-1 rounded text-right max-w-[50%] line-clamp-2">
+                        {event.eligibility || 'Open to all'}
                       </div>
                     </div>
                     
@@ -225,12 +251,28 @@ const BrowseEvents = () => {
                       {event.description}
                     </p>
                     
-                    <div className="flex items-center justify-between mt-auto">
-                      <div className="flex items-center gap-2 text-sm font-medium text-text-secondary">
-                        <CalendarIcon className="w-4 h-4" />
+                    <div className="space-y-2 mt-auto mb-4">
+                      <div className="flex justify-between items-center text-sm text-text-secondary">
+                        <span className="font-medium">Date:</span>
                         <span>{new Date(event.startDate).toLocaleDateString()}</span>
                       </div>
-                      
+                      <div className="flex justify-between items-center text-sm text-text-secondary">
+                        <span className="font-medium">Deadline:</span>
+                        <span className="text-red-400 font-semibold">{new Date(event.registrationDeadline).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm text-text-secondary">
+                        <span className="font-medium">Entry Fee:</span>
+                        <span className="text-green-400 font-bold">{event.registrationFee > 0 ? `₹${event.registrationFee}` : 'Free'}</span>
+                      </div>
+                      {event.registrationLimit && (
+                        <div className="flex justify-between items-center text-sm text-text-secondary border-t border-glass-border pt-1 mt-1">
+                          <span className="font-medium">Limit:</span>
+                          <span className="text-orange-400 font-bold">{event.registrationLimit} spots</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-end">
                       {userInfo?.role === 'Admin' && (
                         <button 
                           onClick={(e) => handleDelete(e, event._id)}

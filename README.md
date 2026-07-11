@@ -27,6 +27,20 @@ No environment variables are strictly required for Vercel because we configured 
 
 ---
 
+## 📈 Grafana Cloud Observability
+
+This project exposes secure Prometheus metrics to be scraped by Grafana Cloud (using the Metrics Endpoint integration).
+
+**Connection Details:**
+- **Metrics URL:** `https://mern-cqqz.onrender.com/metrics`
+- **Authentication Type:** Basic
+- **Username:** `admin`
+- **Password:** `admin`
+
+*(Note: The `/metrics` route is explicitly secured with basic authentication in `server.js` to prevent unauthorized public access).*
+
+---
+
 ## 🐋 Docker vs Local Routing (The Port Issue)
 Previously, the frontend `vite.config.js` was hardcoded to proxy `/api` requests to `http://localhost:5000`. 
 - **The Problem:** This works perfectly when running locally on your laptop, but when running inside Docker, `localhost` refers to the *frontend container itself*, not the backend container.

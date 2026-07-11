@@ -126,13 +126,24 @@ const EventDetails = () => {
           
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
+            <div className="w-full h-64 md:h-80 rounded-xl overflow-hidden border border-glass-border">
+              <img 
+                src={`https://picsum.photos/seed/${event._id}/1200/600`} 
+                alt={event.name} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
             <div className="glass-panel p-8">
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-primary/20 text-accent-neon border border-accent-primary/30">
                   {event.eventType} Event
                 </span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${event.status === 'Ongoing' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : event.status === 'Closed' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 'bg-green-500/20 text-green-400 border-green-500/30'}`}>
+                  {event.status}
+                </span>
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-glass-bg border border-white/20">
-                  Eligibility: {event.eligibility}
+                  Eligibility: {event.eligibility || 'Open to all'}
                 </span>
               </div>
               
@@ -178,10 +189,35 @@ const EventDetails = () => {
                   <div>
                     <h4 className="font-semibold text-text-primary">Location</h4>
                     <p className="text-sm text-text-secondary">
-                      {event.location}
+                      {event.location || 'TBA'}
                     </p>
                   </div>
                 </div>
+                
+                <div className="flex items-start gap-3">
+                  <Package className="w-5 h-5 text-accent-neon mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-text-primary">Entry Details</h4>
+                    <p className="text-sm text-text-secondary">
+                      Fee: <span className="text-green-400 font-bold">{event.registrationFee > 0 ? `₹${event.registrationFee}` : 'Free'}</span>
+                    </p>
+                    {event.registrationLimit && (
+                      <p className="text-sm text-text-secondary">
+                        Limit: <span className="text-orange-400 font-bold">{event.registrationLimit} spots</span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+                
+                {event.tags && event.tags.length > 0 && (
+                  <div className="flex items-start gap-3 md:col-span-2 mt-2 pt-4 border-t border-glass-border/50">
+                    <div className="flex flex-wrap gap-2">
+                      {event.tags.map(tag => (
+                        <span key={tag} className="px-2 py-1 bg-white/5 rounded text-xs text-text-secondary border border-white/10">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
