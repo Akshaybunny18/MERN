@@ -47,6 +47,10 @@ router.post('/register/:eventId', protect, async (req, res) => {
       return res.status(400).json({ message: 'Registration deadline has passed' });
     }
 
+    if (event.eligibility === 'IIITH Students only' && !req.user.email.endsWith('@iiit.ac.in')) {
+      return res.status(403).json({ message: 'Only IIITH students can register for this event.' });
+    }
+
     // Check existing registration
     const existingTicket = await Ticket.findOne({ user: req.user._id, event: event._id });
     if (existingTicket && event.eventType === 'Normal') {
