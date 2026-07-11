@@ -106,9 +106,9 @@ router.post('/register/:eventId', protect, async (req, res) => {
       await event.save();
     }
 
-    // 4. Send Email using Nodemailer (Ethereal)
+    // 4. Send Email using Nodemailer (Ethereal) in background
     if (transporter) {
-      let info = await transporter.sendMail({
+      transporter.sendMail({
         from: '"Event System" <noreply@eventsystem.local>',
         to: req.user.email,
         subject: `Ticket Confirmation: ${event.name}`,
@@ -119,8 +119,11 @@ router.post('/register/:eventId', protect, async (req, res) => {
           <img src="${qrCodeData}" alt="QR Code" />
           <p>Keep this QR code safe for entry.</p>
         `,
+      }).then(info => {
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      }).catch(err => {
+        console.error('Failed to send email:', err);
       });
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     }
 
     res.status(201).json(ticket);
