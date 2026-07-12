@@ -1,28 +1,34 @@
-# Tech Stack & Implementation Details
+# Technology Stack & Architecture
 
-## What is currently implemented? ✅
+This document outlines the core technologies, libraries, and architectural decisions powering the Infinium platform.
 
-1. **MERN Stack**: **Yes**. The core architecture is fully built on MongoDB, Express.js, React (Vite), and Node.js.
-2. **JWT (JSON Web Tokens)**: **Yes**. We use JWT for secure, stateless user authentication in `authMiddleware.js` and login routes.
-3. **Bcrypt**: **Yes**. Passwords for Participants, Organizers, and Admins are hashed securely using `bcryptjs` in `User.js` before being saved to MongoDB.
-4. **Async/Await**: **Yes**. The entire codebase uses modern asynchronous JavaScript (async/await) to handle database queries and API calls without blocking the server.
-5. **Nginx**: **Yes**. You have an nginx service configured in your `docker-compose.yml` acting as a reverse proxy/web server.
-6. **Prometheus**: **Yes**. It is set up in your `docker-compose.yml` along with its config file to scrape metrics.
-7. **Grafana**: **Yes**. It is also included in your `docker-compose.yml` to visualize the metrics collected by Prometheus.
-8. **Redis**: **No**. Currently, Redis is not implemented. Your sessions are stateless (JWT) and we aren't caching database queries yet. (However, adding Redis for caching or rate-limiting in the future would be very easy!)
+## Core Infrastructure
 
-## Is it possible in the future? 🚀
+1. **MongoDB**: Utilized as the primary database for flexible schema design, allowing dynamic event custom forms and extensible participant profiles.
+2. **Express.js & Node.js**: Provides a fast, non-blocking I/O backend environment ideal for handling concurrent registration requests during high-traffic campus events.
+3. **React.js (Vite)**: Component-based frontend architecture ensuring a highly responsive single-page application experience.
+4. **Tailwind CSS**: A utility-first CSS framework used for rapid, responsive, and consistent UI styling without the overhead of heavy external component libraries.
 
-1. **Kubernetes (K8s)**: **Yes, absolutely**. Because you have already containerized the application (you have Dockerfiles for both frontend and backend, and a `docker-compose.yml`), migrating to Kubernetes is the natural next step. You would simply need to write Kubernetes manifests (Deployment, Service, Ingress YAML files) to orchestrate the containers at scale.
+## Security & Authentication
 
-2. **CI/CD (Continuous Integration / Continuous Deployment)**: **Yes**. You can easily set up GitHub Actions (or GitLab CI/Jenkins). A standard CI/CD pipeline for your app would automatically:
-   - Run tests on every commit.
-   - Build the Docker images for the frontend and backend.
-   - Push the images to a container registry (like Docker Hub or GitHub Container Registry).
-   - Trigger a rollout to your server or Kubernetes cluster.
+1. **JSON Web Tokens (JWT)**: Implemented for secure, stateless user authentication and session management across the platform.
+2. **Bcrypt**: Cryptographic hashing algorithm used to securely salt and hash passwords for all Participants, Organizers, and Admins prior to database storage.
+3. **Role-Based Access Control (RBAC)**: Strict middleware validation ensuring logical separation of capabilities between Admins, Organizers, and Participants.
 
-3. **Hosting on Vercel + Render**: **Yes**, this is a very popular and powerful combination!
-   - **Vercel**: You can easily deploy the `frontend` folder to Vercel. It provides a blazing-fast global CDN tailored for React/Vite apps.
-   - **Render**: You can deploy the `backend` folder as a Web Service on Render (it natively supports Node.js).
-   - **Database**: You could use MongoDB Atlas (a fully managed cloud database) and connect your Render backend to it. 
-   *(Note: If you go this route, you won't necessarily need your `docker-compose.yml` or Nginx setup, as Vercel and Render handle the hosting, load balancing, and routing for you!)*
+## Performance & Observability
+
+1. **Upstash Redis**: In-memory caching layer implemented to store high-frequency event queries, drastically reducing MongoDB load. The system features a fault-tolerant fallback mechanism if the Redis cluster is unreachable.
+2. **Prometheus**: The Node.js backend exposes a dedicated `/metrics` endpoint (secured via Basic Authentication) to broadcast live application performance data.
+3. **Grafana**: Integrated to aggregate and visualize the time-series metrics collected by Prometheus.
+
+## Deployment & Orchestration
+
+1. **Docker & Docker Compose**: The entire stack (Frontend, Backend, MongoDB, Nginx, Prometheus, Grafana) is containerized for consistent local development and isolated deployments.
+2. **Nginx**: Configured as a reverse proxy within the Docker network to serve the frontend and route `/api` traffic seamlessly.
+3. **Kubernetes (K8s)**: Production-ready deployment manifests (Deployments, Services) are provided in the `k8s/` directory to orchestrate containers at scale.
+4. **Vercel & Render**: Native support for edge CDN deployment of the React frontend via Vercel, and optimized Web Service deployment of the backend via Render.
+5. **CI/CD Readiness**: The containerized architecture is designed to seamlessly integrate with GitHub Actions for automated testing, image building, and deployment rollouts.
+
+## Background Services
+
+1. **Nodemailer**: Integrated with Ethereal Email for automated, non-blocking background processing of ticket confirmation emails and QR codes.
