@@ -1,5 +1,7 @@
 # Infinium: Campus Event & Merchandise Management System
 
+infinium-fest.vercel.app
+
 **Infinium** is a comprehensive, enterprise-grade MERN stack platform designed specifically for university campuses to streamline event registrations, club merchandise sales, and participant tracking. It features a robust Role-Based Access Control (RBAC) system for Admins, Organizers (Clubs), and Participants, dynamic custom forms, automated event lifecycle management, and real-time observability via Grafana. Built with a focus on beautiful UI/UX, seamless performance using Redis caching, fault-tolerant cloud architecture, Kubernetes (K8s) orchestration, and implemented JWT and Bcrypt for secure authentication and password management.
 
 ---
